@@ -47,41 +47,25 @@ The application can be configured using environment variables in the `.env` file
 
 ## 📊 Running the Application
 
-### Step 1: Fetch Data
-
-Fetch asteroid data from NASA's NeoWs API:
-
-```bash
-python -m lib.data_fetcher
-```
-
-This will create a raw JSON file in the data directory.
-
-### Step 2: Process Data
-
-Process the raw data into a clean CSV format:
-
-```bash
-python -m lib.data_processing
-```
-
-### Step 3: Analyze Data
-
-Analyze the data to calculate risk scores and generate time series data:
-
-```bash
-python -m lib.analysis
-```
-
-### Step 4: Launch Dashboard
-
-Start the Streamlit dashboard:
+Start the Streamlit dashboard with a single command:
 
 ```bash
 python -m streamlit run app.py
 ```
 
 The dashboard will be available at [http://localhost:8501](http://localhost:8501).
+
+The application will automatically:
+1. Check if data files exist
+2. If not, fetch asteroid data from NASA's NeoWs API
+3. Process the raw data into a clean format
+4. Analyze the data to calculate risk scores and generate time series data
+5. Display the interactive dashboard
+
+> **Note**: You can still run the data pipeline steps separately if needed:
+> - `python -m lib.data_fetcher` - Fetch data only
+> - `python -m lib.data_processing` - Process data only
+> - `python -m lib.analysis` - Analyze data only
 
 ## 📁 Project Structure
 

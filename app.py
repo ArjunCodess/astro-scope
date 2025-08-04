@@ -20,14 +20,42 @@ def load_data():
     time_series_path = os.path.join(data_dir, 'time_series_data.csv')
     
     if not os.path.exists(analyzed_path) or not os.path.exists(time_series_path):
-        st.error("Data files not found. Please run the analysis.py script first.")
-        return None, None
-    
-    analyzed_df = pd.read_csv(analyzed_path, parse_dates=['date', 'close_approach_date'])
-    analyzed_df.set_index('date', inplace=True)
-    
-    time_series_df = pd.read_csv(time_series_path, parse_dates=['date'])
-    time_series_df.set_index('date', inplace=True)
+        with st.spinner('Data files not found. Fetching and processing asteroid data...'):
+            from lib.data_fetcher import fetch_and_save_asteroid_data
+            from lib.data_processing import process_asteroid_data
+            from lib.analysis import analyze_asteroid_data
+            
+            if not os.path.exists(data_dir):
+                os.makedirs(data_dir)
+            
+            # Step 1: Fetch data
+            st.info('Fetching asteroid data from NASA API...')
+            raw_data = fetch_and_save_asteroid_data()
+            if raw_data is None:
+                st.error('Failed to fetch asteroid data. Please check your NASA API key in .env file.')
+                return None, None
+            
+            # Step 2: Process data
+            st.info('Processing asteroid data...')
+            cleaned_df = process_asteroid_data()
+            if cleaned_df is None:
+                st.error('Failed to process asteroid data.')
+                return None, None
+            
+            # Step 3: Analyze data
+            st.info('Analyzing asteroid data...')
+            analyzed_df, time_series_df, _ = analyze_asteroid_data()
+            if analyzed_df is None:
+                st.error('Failed to analyze asteroid data.')
+                return None, None
+            
+            st.success('Data pipeline completed successfully!')
+    else:
+        analyzed_df = pd.read_csv(analyzed_path, parse_dates=['date', 'close_approach_date'])
+        analyzed_df.set_index('date', inplace=True)
+        
+        time_series_df = pd.read_csv(time_series_path, parse_dates=['date'])
+        time_series_df.set_index('date', inplace=True)
     
     return analyzed_df, time_series_df
 
