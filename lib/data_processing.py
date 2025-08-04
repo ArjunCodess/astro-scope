@@ -1,6 +1,11 @@
 import pandas as pd
 import json
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+data_dir = os.getenv('DATA_DIR', 'data')
 
 def load_raw_data(filename='asteroids_raw.json'):
     """
@@ -12,7 +17,7 @@ def load_raw_data(filename='asteroids_raw.json'):
     Returns:
         dict: The loaded asteroid data
     """
-    filepath = os.path.join('data', filename)
+    filepath = os.path.join(data_dir, filename)
     if not os.path.exists(filepath):
         print(f"Error: {filepath} does not exist. Please run data_fetcher.py first.")
         return None
@@ -139,7 +144,7 @@ def save_clean_data(df, filename='asteroids_clean.csv'):
         print("Error: No data to save")
         return
     
-    filepath = os.path.join('data', filename)
+    filepath = os.path.join(data_dir, filename)
     df.to_csv(filepath)
     print(f"Cleaned data saved to {filepath}")
 

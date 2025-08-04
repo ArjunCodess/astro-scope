@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-data_dir = 'data'
+data_dir = os.getenv('DATA_DIR', 'data')
 if not os.path.exists(data_dir):
     os.makedirs(data_dir)
 
@@ -51,7 +51,9 @@ def fetch_asteroid_data(start_date, end_date, api_key=None):
         print(f"Response: {response.text}")
         return None
 
-def fetch_data_in_chunks(start_date, end_date, chunk_size=7, api_key=None):
+def fetch_data_in_chunks(start_date, end_date, chunk_size=None, api_key=None):
+    if chunk_size is None:
+        chunk_size = int(os.getenv('API_CHUNK_SIZE', 7))
     """
     Fetch asteroid data in chunks due to API limitations (7 days max per request).
     
@@ -105,12 +107,14 @@ def save_data_to_json(data, filename='asteroids_raw.json'):
         data (dict): Asteroid data to save
         filename (str, optional): Output filename. Defaults to 'asteroids_raw.json'.
     """
-    filepath = os.path.join('data', filename)
+    filepath = os.path.join(data_dir, filename)
     with open(filepath, 'w') as f:
         json.dump(data, f, indent=2)
     print(f"Data saved to {filepath}")
 
-def fetch_and_save_asteroid_data(days=90, api_key=None):
+def fetch_and_save_asteroid_data(days=None, api_key=None):
+    if days is None:
+        days = int(os.getenv('DATA_FETCH_DAYS', 90))
     """
     Fetch asteroid data for the last N days and save it to a file.
     
@@ -142,4 +146,4 @@ if __name__ == "__main__":
     api_key = get_nasa_api_key()
     print(f"Using API key: {api_key}")
     
-    fetch_and_save_asteroid_data(days=30, api_key=api_key)
+    fetch_and_save_asteroid_data(api_key=api_key)

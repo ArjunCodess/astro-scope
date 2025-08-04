@@ -2,7 +2,10 @@ import streamlit as st
 import pandas as pd
 import os
 from datetime import datetime
+from dotenv import load_dotenv
 from lib import visualizer
+
+load_dotenv()
 
 st.set_page_config(
     page_title="AstroScope: NASA Asteroid Dashboard",
@@ -12,8 +15,9 @@ st.set_page_config(
 
 def load_data():
     """Load the analyzed asteroid data and time series data"""
-    analyzed_path = os.path.join('data', 'asteroids_analyzed.csv')
-    time_series_path = os.path.join('data', 'time_series_data.csv')
+    data_dir = os.getenv('DATA_DIR', 'data')
+    analyzed_path = os.path.join(data_dir, 'asteroids_analyzed.csv')
+    time_series_path = os.path.join(data_dir, 'time_series_data.csv')
     
     if not os.path.exists(analyzed_path) or not os.path.exists(time_series_path):
         st.error("Data files not found. Please run the analysis.py script first.")
@@ -74,9 +78,10 @@ def main():
     )
     
     # Risk threshold filter
+    default_threshold = float(os.getenv('RISK_THRESHOLD', 0.6))
     risk_threshold = st.sidebar.slider(
         "Risk Score Threshold",
-        0.0, 1.0, 0.5, 0.05
+        0.0, 1.0, default_threshold, 0.05
     )
     
     # Filter data based on date range

@@ -1,6 +1,8 @@
 import pandas as pd
-import numpy as np
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def load_clean_data(filename='asteroids_clean.csv'):
     """
@@ -12,7 +14,8 @@ def load_clean_data(filename='asteroids_clean.csv'):
     Returns:
         pandas.DataFrame: The loaded asteroid data
     """
-    filepath = os.path.join('data', filename)
+    data_dir = os.getenv('DATA_DIR', 'data')
+    filepath = os.path.join(data_dir, filename)
     if not os.path.exists(filepath):
         print(f"Error: {filepath} does not exist. Please run data_processing.py first.")
         return None
@@ -128,7 +131,8 @@ def generate_time_series_data(df):
     
     if 'risk_score' in df.columns:
         daily_avg_risk = df.resample('D')['risk_score'].mean().to_frame('avg_risk_score')
-        daily_high_risk = df[df['risk_score'] > 0.6].resample('D').size().to_frame('high_risk_count')
+        risk_threshold = float(os.getenv('RISK_THRESHOLD', 0.6))
+        daily_high_risk = df[df['risk_score'] > risk_threshold].resample('D').size().to_frame('high_risk_count')
         
         daily_data = pd.concat([daily_counts, daily_avg_diameter, daily_avg_velocity, 
                               daily_avg_miss, daily_avg_risk, daily_high_risk], axis=1)
@@ -204,11 +208,12 @@ def analyze_asteroid_data(input_file='asteroids_clean.csv', output_file='asteroi
     print("Preparing visualization data...")
     viz_data = prepare_visualization_data(analyzed_df)
     
-    filepath = os.path.join('data', output_file)
+    data_dir = os.getenv('DATA_DIR', 'data')
+    filepath = os.path.join(data_dir, output_file)
     analyzed_df.to_csv(filepath)
     print(f"Analyzed data saved to {filepath}")
     
-    time_series_filepath = os.path.join('data', 'time_series_data.csv')
+    time_series_filepath = os.path.join(data_dir, 'time_series_data.csv')
     time_series_df.to_csv(time_series_filepath)
     print(f"Time series data saved to {time_series_filepath}")
     
@@ -222,7 +227,8 @@ if __name__ == "__main__":
         print(f"Number of asteroids: {len(analyzed_df)}")
         print(f"Date range: {analyzed_df.index.min().date()} to {analyzed_df.index.max().date()}")
         print(f"Average risk score: {analyzed_df['risk_score'].mean():.4f}")
-        print(f"High risk asteroids (score > 0.6): {len(analyzed_df[analyzed_df['risk_score'] > 0.6])}")
+        risk_threshold = float(os.getenv('RISK_THRESHOLD', 0.6))
+        print(f"High risk asteroids (score > {risk_threshold}): {len(analyzed_df[analyzed_df['risk_score'] > risk_threshold])}")
         print(f"Anomalous asteroids: {analyzed_df['is_anomaly'].sum()}")
         
         print("\nTop 5 Highest Risk Asteroids:")
