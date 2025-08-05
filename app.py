@@ -115,6 +115,29 @@ def main():
     # Filter data based on date range
     filtered_df = analyzed_df.loc[start_date:end_date]
     
+    st.sidebar.header("Custom Alerts")
+    alert_type = st.sidebar.radio(
+        "Alert Type",
+        ["Risk Score", "Z-Score"]
+    )
+    
+    if alert_type == "Risk Score":
+        alert_threshold = st.sidebar.slider(
+            "Alert Threshold (Risk Score)",
+            0.0, 1.0, 0.7, 0.05
+        )
+        alert_df = filtered_df[filtered_df['risk_score'] > alert_threshold]
+    else:  # Z-Score
+        z_score_column = st.sidebar.selectbox(
+            "Z-Score Metric",
+            ["diameter_mean_km_zscore", "miss_distance_km_zscore", "relative_velocity_km_s_zscore", "risk_score_zscore"]
+        )
+        z_score_threshold = st.sidebar.slider(
+            "Alert Threshold (Z-Score)",
+            0.0, 5.0, 2.0, 0.1
+        )
+        alert_df = filtered_df[filtered_df[z_score_column].abs() > z_score_threshold]
+    
     # Dashboard metrics
     st.header("Dashboard Metrics")
     col1, col2, col3, col4 = st.columns(4)
@@ -200,6 +223,43 @@ def main():
     
     top_risk_table = visualizer.format_top_risk_table(top_risk)
     st.dataframe(top_risk_table, use_container_width=True)
+    
+    # Custom Alerts Panel - Display alerts
+    st.header(f"Custom Alerts: {alert_type}")
+    
+    if len(alert_df) > 0:
+        if alert_type == "Risk Score":
+            st.write(f"Showing asteroids with risk score above {alert_threshold}")
+            alert_table = visualizer.format_top_risk_table(alert_df)
+        else:  # Z-Score
+            metric_name = z_score_column.replace('_zscore', '')
+            st.write(f"Showing asteroids with {metric_name} z-score above {z_score_threshold}")
+            
+            alert_table = alert_df[['name', 'diameter_mean_km', 'miss_distance_km', 
+                                  'relative_velocity_km_s', 'risk_score', z_score_column]].reset_index()
+            
+            alert_table['date'] = alert_table['date'].dt.date
+            alert_table['diameter_mean_km'] = alert_table['diameter_mean_km'].round(3)
+            alert_table['miss_distance_km'] = (alert_table['miss_distance_km'] / 1000000).round(3).astype(str) + ' million'
+            alert_table['relative_velocity_km_s'] = alert_table['relative_velocity_km_s'].round(2)
+            alert_table['risk_score'] = alert_table['risk_score'].round(4)
+            alert_table[z_score_column] = alert_table[z_score_column].round(2)
+            
+            column_names = {
+                'date': 'Date',
+                'name': 'Name',
+                'diameter_mean_km': 'Diameter (km)',
+                'miss_distance_km': 'Miss Distance',
+                'relative_velocity_km_s': 'Velocity (km/s)',
+                'risk_score': 'Risk Score',
+                z_score_column: f'{metric_name} Z-Score'
+            }
+            
+            alert_table.rename(columns=column_names, inplace=True)
+        
+        st.dataframe(alert_table, use_container_width=True)
+    else:
+        st.info(f"No asteroids found above the {alert_type.lower()} threshold.")
     
     st.header("Additional Insights")
     
