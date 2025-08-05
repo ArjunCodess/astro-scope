@@ -9,7 +9,7 @@ load_dotenv()
 
 st.set_page_config(
     page_title="AstroScope: NASA Asteroid Dashboard",
-    page_icon="🔭",
+    page_icon="./assets/logo.png",
     layout="wide"
 )
 
@@ -73,7 +73,9 @@ def prepare_viz_data(df):
     return viz_data
 
 def main():
-    st.title("🔭 AstroScope: NASA Asteroid Dashboard")
+    st.image("assets/logo.png", width=100)
+    st.title("AstroScope: NASA Asteroid Dashboard")
+        
     st.markdown("""
     This dashboard visualizes near-Earth asteroid data from NASA's NeoWs API, 
     providing insights into asteroid sizes, velocities, miss distances, and potential hazards.
