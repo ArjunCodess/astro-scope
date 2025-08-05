@@ -127,6 +127,8 @@ def main():
             0.0, 1.0, 0.7, 0.05
         )
         alert_df = filtered_df[filtered_df['risk_score'] > alert_threshold]
+        if len(alert_df) > 0:
+            st.sidebar.success(f"Found {len(alert_df)} asteroids above risk threshold")
     else:  # Z-Score
         z_score_column = st.sidebar.selectbox(
             "Z-Score Metric",
@@ -137,6 +139,8 @@ def main():
             0.0, 5.0, 2.0, 0.1
         )
         alert_df = filtered_df[filtered_df[z_score_column].abs() > z_score_threshold]
+        if len(alert_df) > 0:
+            st.sidebar.success(f"Found {len(alert_df)} asteroids above z-score threshold")
     
     # Dashboard metrics
     st.header("Dashboard Metrics")
@@ -148,6 +152,8 @@ def main():
     with col2:
         high_risk_count = len(filtered_df[filtered_df['risk_score'] > risk_threshold])
         st.metric("High Risk Asteroids", high_risk_count)
+        if high_risk_count > 0:
+            st.toast(f"⚠️ {high_risk_count} high risk asteroids detected!", icon="⚠️")
     
     with col3:
         avg_diameter = filtered_df['diameter_mean_km'].mean()
@@ -156,6 +162,8 @@ def main():
     with col4:
         hazardous_count = filtered_df['is_potentially_hazardous'].sum()
         st.metric("Potentially Hazardous", hazardous_count)
+        if hazardous_count > 0:
+            st.toast(f"⚠️ {hazardous_count} potentially hazardous asteroids detected!", icon="⚠️")
     
     # Time series visualizations
     st.header("Time Series Analysis")
@@ -224,16 +232,19 @@ def main():
     top_risk_table = visualizer.format_top_risk_table(top_risk)
     st.dataframe(top_risk_table, use_container_width=True)
     
+    if len(top_risk) > 0 and top_risk['risk_score'].max() > 0.8:
+        st.warning(f"⚠️ High risk asteroid detected: {top_risk.iloc[0]['name']} with risk score {top_risk['risk_score'].max():.2f}")
+    
     # Custom Alerts Panel - Display alerts
     st.header(f"Custom Alerts: {alert_type}")
     
     if len(alert_df) > 0:
         if alert_type == "Risk Score":
-            st.write(f"Showing asteroids with risk score above {alert_threshold}")
+            st.success(f"Found {len(alert_df)} asteroids with risk score above {alert_threshold}")
             alert_table = visualizer.format_top_risk_table(alert_df)
         else:  # Z-Score
             metric_name = z_score_column.replace('_zscore', '')
-            st.write(f"Showing asteroids with {metric_name} z-score above {z_score_threshold}")
+            st.success(f"Found {len(alert_df)} asteroids with {metric_name} z-score above {z_score_threshold}")
             
             alert_table = alert_df[['name', 'diameter_mean_km', 'miss_distance_km', 
                                   'relative_velocity_km_s', 'risk_score', z_score_column]].reset_index()
@@ -258,6 +269,7 @@ def main():
             alert_table.rename(columns=column_names, inplace=True)
         
         st.dataframe(alert_table, use_container_width=True)
+        st.toast(f"Alert panel updated with {len(alert_df)} asteroids", icon="🚨")
     else:
         st.info(f"No asteroids found above the {alert_type.lower()} threshold.")
     
@@ -274,7 +286,9 @@ def main():
         anomalous_table = visualizer.format_anomalous_table(anomalous)
         
         if anomalous_table is not None:
+            st.success(f"Found {len(anomalous)} anomalous asteroids")
             st.dataframe(anomalous_table, use_container_width=True)
+            st.toast(f"⚠️ {len(anomalous)} anomalous asteroids detected", icon="🔍")
         else:
             st.info("No anomalous asteroids found in the selected date range.")
 
