@@ -1,5 +1,11 @@
 # 🔭 AstroScope: NASA Asteroid Dashboard
 
+<div align="center">
+  <a href="https://youtu.be/VmNRG0jzy6o">
+    <img src="https://img.youtube.com/vi/VmNRG0jzy6o/0.jpg" alt="AstroScope Demo" width="600" />
+  </a>
+</div>
+
 AstroScope is an interactive dashboard that visualizes near-Earth asteroid data from NASA's NeoWs API. It provides insights into asteroid sizes, velocities, miss distances, and potential hazards.
 
 ## 📋 Features
