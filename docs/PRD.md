@@ -40,7 +40,6 @@ astro_scope/
 * `matplotlib` – for data visualization.
 * `plotly` – for interactive charts.
 * `python-dotenv` – for loading environment variables.
-* `messagebird` – for sending SMS notifications.
 
 ---
 

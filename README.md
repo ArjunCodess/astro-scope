@@ -8,7 +8,6 @@ AstroScope is an interactive dashboard that visualizes near-Earth asteroid data 
 - **Data Analysis**: Calculates risk scores, identifies anomalies, and generates time series data
 - **Interactive Dashboard**: Visualizes asteroid data with interactive charts and tables
 - **Filtering**: Filter data by date range and risk threshold
-- **Asteroid Alerts**: Receive SMS alerts about the closest approaching asteroids
 - **Responsive Design**: Works on desktop and mobile devices
 
 ## 🚀 Getting Started
@@ -45,7 +44,6 @@ The application can be configured using environment variables in the `.env` file
 - `DATA_DIR`: Directory to store data files (default: "data")
 - `API_CHUNK_SIZE`: Maximum number of days per API request (default: 7, NASA API limit)
 - `RISK_THRESHOLD`: Threshold for classifying asteroids as high risk (default: 0.6)
-- `SMS_API_KEY`: API key for SMS service to send asteroid alerts (required for alert functionality)
 
 ## 📊 Running the Application
 
@@ -77,7 +75,6 @@ The application will automatically:
   - `data_processing.py`: Processes raw data into clean format
   - `analysis.py`: Analyzes data and calculates risk scores
   - `visualizer.py`: Creates visualizations for the dashboard
-  - `alerter.py`: Handles SMS alerts for asteroid approaches
 - `data/`: Data directory (created automatically)
 - `docs/`: Documentation
   - `PRD.md`: Product Requirements Document
