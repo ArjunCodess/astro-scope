@@ -24,7 +24,7 @@ astro_scope/
 │   ├── data_fetcher.py       # Handles API calls
 │   ├── data_cleaner.py       # Normalizes + processes raw data
 │   ├── feature_engineer.py   # Risk scoring, z-scores, stats
-│   └── visualizer.py         # Generates matplotlib plots
+│   └── visualizer.py         # Generates plots
 │
 ├── /assets/                  # Logo, images, icons
 │   └── logo.png
@@ -37,7 +37,6 @@ astro_scope/
 * `streamlit` – for building the interactive web application.
 * `requests` – for making HTTP requests to the NeoWs API.
 * `pandas` – for data manipulation and analysis.
-* `matplotlib` – for data visualization.
 * `plotly` – for interactive charts.
 * `python-dotenv` – for loading environment variables.
 
@@ -147,7 +146,7 @@ astro_scope/
 
    * Use `st.title()` to display the application title.
    * Use `st.sidebar` for user inputs such as date range selection.
-   * Display visualizations using `st.pyplot()` for Matplotlib charts.
+   * Display visualizations using `st.plotly_chart()` for Plotly charts.
    * Use `st.dataframe()` to display data tables.
 
 2. **User Inputs:**
@@ -275,7 +274,7 @@ Design and build an interactive Streamlit dashboard that tells the asteroid risk
 **What you do:**
 
 * Create UI skeleton in `app.py` with title, sidebar filters (date range, risk threshold).
-* Integrate matplotlib plots:
+* Integrate plotly plots:
 
   * Time series of asteroid counts & average risk.
   * Histograms for size, velocity, miss distance.
