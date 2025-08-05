@@ -37,9 +37,10 @@ astro_scope/
 * `streamlit` – for building the interactive web application.
 * `requests` – for making HTTP requests to the NeoWs API.
 * `pandas` – for data manipulation and analysis.
-* `numpy` – for numerical operations and calculations.
 * `matplotlib` – for data visualization.
 * `plotly` – for interactive charts.
+* `python-dotenv` – for loading environment variables.
+* `messagebird` – for sending SMS notifications.
 
 ---
 
@@ -249,7 +250,7 @@ Turn messy API JSON into a clean, structured, usable pandas DataFrame.
 ### **Phase 3: Analysis & Feature Engineering**
 
 **Goal:**
-Crunch numbers with NumPy and Pandas to generate meaningful metrics and risk scores.
+Crunch numbers with Pandas to generate meaningful metrics and risk scores.
 
 **What you do:**
 
