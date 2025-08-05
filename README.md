@@ -21,8 +21,8 @@ AstroScope is an interactive dashboard that visualizes near-Earth asteroid data 
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/ArjunCodess/astro-scope.git
-   cd astro-scope
+   git clone https://github.com/ArjunCodess/astroscope.git
+   cd astroscope
    ```
 
 2. Install dependencies:
