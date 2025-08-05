@@ -117,6 +117,7 @@ def main():
     # Filter data based on date range
     filtered_df = analyzed_df.loc[start_date:end_date]
     
+    st.sidebar.divider()
     st.sidebar.header("Custom Alerts")
     alert_type = st.sidebar.radio(
         "Alert Type",
@@ -294,10 +295,10 @@ def main():
         else:
             st.info("No anomalous asteroids found in the selected date range.")
 
-    st.markdown("---")
+    st.divider()
     st.markdown("""
-    **AstroScope: NASA Asteroid Dashboard** | Data from NASA NeoWs API | Last updated: {}
-    """.format(datetime.now().strftime("%Y-%m-%d")))
+    **AstroScope: NASA Asteroid Dashboard** | Data from NASA NeoWs API
+    """)
 
 if __name__ == "__main__":
     main()
