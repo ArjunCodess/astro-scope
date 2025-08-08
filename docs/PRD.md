@@ -136,6 +136,12 @@ astro_scope/
    * Display a table of the top 10 asteroids with the highest risk scores.
    * Include details such as name, size, velocity, and miss distance.
 
+5. **Risk Heatmap Calendar:**
+
+   * Display a GitHub-style calendar heatmap of daily average risk scores.
+   * Provide quick visual insight into risk intensity over time at a glance.
+   * Implemented with Plotly for consistent interaction and theming.
+
 ---
 
 ### 🖥️ Streamlit Application
@@ -280,6 +286,7 @@ Design and build an interactive Streamlit dashboard that tells the asteroid risk
   * Histograms for size, velocity, miss distance.
   * Scatter plot of miss distance vs velocity with risk coloring.
   * Table of top 10 risky asteroids.
+  * Calendar heatmap of daily average risk (GitHub-style).
 * Add dynamic filtering and reactive updates based on user input.
 * Optimize plot layout for clarity and impact.
 * Add tooltips, legends, and axis labels.

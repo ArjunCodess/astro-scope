@@ -22,7 +22,7 @@ def load_data():
     time_series_path = os.path.join(data_dir, 'time_series_data.csv')
     
     if not os.path.exists(analyzed_path) or not os.path.exists(time_series_path):
-        with st.spinner('Data files not found. Fetching and processing asteroid data...'):
+        with st.spinner('Fetching and processing asteroid data...'):
             from lib.data_fetcher import fetch_and_save_asteroid_data
             from lib.data_processing import process_asteroid_data
             from lib.analysis import analyze_asteroid_data

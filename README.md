@@ -14,6 +14,7 @@ AstroScope is an interactive dashboard that visualizes near-Earth asteroid data 
 - **Data Analysis**: Calculates risk scores, identifies anomalies, and generates time series data
 - **Interactive Dashboard**: Visualizes asteroid data with interactive charts and tables
 - **Filtering**: Filter data by date range and risk threshold
+- **Risk Heatmap Calendar**: GitHub-style calendar heatmap of daily average risk scores
 - **Responsive Design**: Works on desktop and mobile devices
 
 ## 🚀 Getting Started
