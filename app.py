@@ -4,6 +4,8 @@ import os
 from datetime import datetime
 from dotenv import load_dotenv
 from lib import visualizer
+import io
+import zipfile
 
 load_dotenv()
 
@@ -58,6 +60,18 @@ def load_data():
         time_series_df.set_index('date', inplace=True)
     
     return analyzed_df, time_series_df
+
+def create_data_zip(data_dir: str) -> bytes:
+    """zip the entire data directory and return bytes"""
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for root, _, files in os.walk(data_dir):
+            for name in files:
+                file_path = os.path.join(root, name)
+                arcname = os.path.relpath(file_path, start=data_dir)
+                zipf.write(file_path, arcname=arcname)
+    buffer.seek(0)
+    return buffer.read()
 
 def prepare_viz_data(df):
     """Prepare data subsets for different visualizations"""
@@ -144,6 +158,41 @@ def main():
         alert_df = filtered_df[filtered_df[z_score_column].abs() > z_score_threshold]
         if len(alert_df) > 0:
             st.sidebar.success(f"Found {len(alert_df)} asteroids above z-score threshold")
+
+    st.sidebar.divider()
+    st.sidebar.header("Export Data")
+    data_dir = os.getenv('DATA_DIR', 'data')
+
+    files_to_export = [
+        ("asteroids_analyzed.csv", "text/csv"),
+        ("asteroids_clean.csv", "text/csv"),
+        ("asteroids_raw.json", "application/json"),
+        ("time_series_data.csv", "text/csv"),
+    ]
+
+    any_file_exists = False
+    for filename, mime in files_to_export:
+        path = os.path.join(data_dir, filename)
+        if os.path.exists(path):
+            any_file_exists = True
+            with open(path, 'rb') as f:
+                st.sidebar.download_button(
+                    label=f"Download {filename}",
+                    data=f.read(),
+                    file_name=filename,
+                    mime=mime,
+                    use_container_width=True,
+                )
+
+    if os.path.exists(data_dir) and any_file_exists:
+        zip_bytes = create_data_zip(data_dir)
+        st.sidebar.download_button(
+            label="Download data folder (zip)",
+            data=zip_bytes,
+            file_name="data.zip",
+            mime="application/zip",
+            use_container_width=True,
+        )
     
     # Dashboard metrics
     st.header("Dashboard Metrics")
