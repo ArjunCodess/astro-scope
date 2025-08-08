@@ -160,6 +160,54 @@ def format_anomalous_table(anomalous):
     
     return anomalous_table
 
+def format_closest_miss_table(closest_df):
+    """
+    format the daily closest miss table for display.
+
+    args:
+        closest_df (pandas.DataFrame): dataframe with one asteroid per day (closest miss)
+
+    returns:
+        pandas.DataFrame: formatted dataframe for display
+    """
+    if closest_df is None or len(closest_df) == 0:
+        return pd.DataFrame()
+
+    base_columns = ['name', 'diameter_mean_km', 'miss_distance_km', 'relative_velocity_km_s', 'risk_score']
+    columns = [c for c in base_columns if c in closest_df.columns]
+    if 'risk_level' in closest_df.columns:
+        columns.append('risk_level')
+
+    table = closest_df[columns].reset_index()
+
+    if 'date' in table.columns:
+        table['date'] = pd.to_datetime(table['date']).dt.date
+
+    if 'diameter_mean_km' in table.columns:
+        table['diameter_mean_km'] = table['diameter_mean_km'].round(3)
+
+    if 'miss_distance_km' in table.columns:
+        table['miss_distance_km'] = (table['miss_distance_km'] / 1_000_000).round(3).astype(str) + ' million'
+
+    if 'relative_velocity_km_s' in table.columns:
+        table['relative_velocity_km_s'] = table['relative_velocity_km_s'].round(2)
+
+    if 'risk_score' in table.columns:
+        table['risk_score'] = table['risk_score'].round(4)
+
+    label_map = {
+        'date': 'Date',
+        'name': 'Name',
+        'diameter_mean_km': 'Diameter (km)',
+        'miss_distance_km': 'Miss Distance',
+        'relative_velocity_km_s': 'Velocity (km/s)',
+        'risk_score': 'Risk Score',
+        'risk_level': 'Risk Level',
+    }
+    table = table.rename(columns={k: v for k, v in label_map.items() if k in table.columns})
+
+    return table
+
 def create_risk_calendar_heatmap(df, value_col='avg_risk_score', title='Risk Heatmap Calendar'):
     """
     create a github-style calendar heatmap for a daily metric.

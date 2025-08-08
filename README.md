@@ -15,6 +15,7 @@ AstroScope is an interactive dashboard that visualizes near-Earth asteroid data 
 - **Interactive Dashboard**: Visualizes asteroid data with interactive charts and tables
 - **Filtering**: Filter data by date range and risk threshold
 - **Risk Heatmap Calendar**: GitHub-style calendar heatmap of daily average risk scores
+- **Daily Closest Miss Table**: Ranks the top 10 dates by the closest asteroid approach, with details per day
 - **Responsive Design**: Works on desktop and mobile devices
 
 ## 🚀 Getting Started
@@ -68,6 +69,7 @@ The application will automatically:
 3. Process the raw data into a clean format
 4. Analyze the data to calculate risk scores and generate time series data
 5. Display the interactive dashboard
+   - Includes a "Daily Closest Miss" table showing the closest approach per day and ranking the top 10 dates by proximity
 
 > **Note**: You can still run the data pipeline steps separately if needed:
 > - `python -m lib.data_fetcher` - Fetch data only

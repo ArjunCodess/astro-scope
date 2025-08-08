@@ -294,6 +294,19 @@ def main():
     if len(top_risk) > 0 and top_risk['risk_score'].max() > 0.8:
         st.warning(f"⚠️ High risk asteroid detected: {top_risk.iloc[0]['name']} with risk score {top_risk['risk_score'].max():.2f}")
     
+    # Daily Closest Miss (Top 10 by closest approach distance)
+    st.header("Daily Closest Miss (Top 10 Dates)")
+
+    if 'miss_distance_km' in filtered_df.columns and not filtered_df.empty:
+        closest_idx_per_day = filtered_df.groupby(filtered_df.index.normalize())['miss_distance_km'].idxmin()
+        daily_closest = filtered_df.loc[closest_idx_per_day]
+        top10_closest = daily_closest.sort_values('miss_distance_km', ascending=True).head(10)
+
+        closest_table = visualizer.format_closest_miss_table(top10_closest)
+        st.dataframe(closest_table, use_container_width=True)
+    else:
+        st.info("closest miss data is unavailable for the selected date range.")
+
     # Custom Alerts Panel - Display alerts
     st.header(f"Custom Alerts: {alert_type}")
     

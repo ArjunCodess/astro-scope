@@ -142,6 +142,12 @@ astro_scope/
    * Provide quick visual insight into risk intensity over time at a glance.
    * Implemented with Plotly for consistent interaction and theming.
 
+6. **Daily Closest Miss Table:**
+
+   * For each day, select the asteroid with the minimum `miss_distance_km`.
+   * Rank dates by the smallest daily `miss_distance_km` and display the top 10.
+   * Show columns: date, name, diameter, miss distance, velocity, risk score (and level if available).
+
 ---
 
 ### 🖥️ Streamlit Application
