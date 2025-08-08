@@ -252,6 +252,13 @@ def main():
         )
         st.plotly_chart(fig, use_container_width=True)
     
+    # Risk Heatmap Calendar
+    st.header("Risk Heatmap Calendar")
+    heatmap_fig = visualizer.create_risk_calendar_heatmap(
+        filtered_ts, value_col='avg_risk_score', title='Risk Heatmap Calendar'
+    )
+    st.plotly_chart(heatmap_fig, use_container_width=True)
+
     # Risk distribution
     st.header("Risk Distribution")
     

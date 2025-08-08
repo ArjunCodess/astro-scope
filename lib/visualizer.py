@@ -1,4 +1,6 @@
 import plotly.express as px
+import plotly.graph_objects as go
+import pandas as pd
 
 def create_time_series_plot(df, columns, title, y_label='Value'):
     """
@@ -157,3 +159,83 @@ def format_anomalous_table(anomalous):
                               'Velocity (km/s)', 'Risk Score']
     
     return anomalous_table
+
+def create_risk_calendar_heatmap(df, value_col='avg_risk_score', title='Risk Heatmap Calendar'):
+    """
+    create a github-style calendar heatmap for a daily metric.
+
+    args:
+        df (pandas.DataFrame): daily time series dataframe with a datetime index
+        value_col (str): column name to visualize (e.g., 'avg_risk_score')
+        title (str): plot title
+
+    returns:
+        plotly.graph_objects.Figure: calendar heatmap figure
+    """
+    if df is None or df.empty or value_col not in df.columns:
+
+        return go.Figure()
+
+    ts = df.copy()
+
+    if not isinstance(ts.index, pd.DatetimeIndex):
+        ts.index = pd.to_datetime(ts.get('date', ts.index))
+
+    ts = ts.sort_index()
+
+    ts.index = ts.index.normalize()
+    ts[value_col] = ts[value_col].astype(float).fillna(0.0)
+
+    min_date = ts.index.min()
+    max_date = ts.index.max()
+    grid_start = min_date - pd.to_timedelta(min_date.weekday(), unit='D')  # monday of first week
+    grid_end = max_date - pd.to_timedelta(max_date.weekday(), unit='D')    # monday of last week
+
+    week_starts = pd.date_range(grid_start, grid_end, freq='7D')
+    weekdays = list(range(0, 7))  # 0=mon
+
+    values_by_date = ts[value_col]
+
+    z_matrix = []
+    text_matrix = []
+    customdate_matrix = []
+    for wd in weekdays:
+        row_z = []
+        row_text = []
+        row_custom = []
+        for ws in week_starts:
+            current_date = (ws + pd.to_timedelta(wd, unit='D')).normalize()
+            value = float(values_by_date.get(current_date, 0.0))
+            row_z.append(value)
+            row_text.append(str(current_date.day))
+            row_custom.append(current_date.strftime('%Y-%m-%d'))
+        z_matrix.append(row_z)
+        text_matrix.append(row_text)
+        customdate_matrix.append(row_custom)
+
+    x_labels = [d.strftime('%b %d') for d in week_starts]
+    y_labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+
+    fig = go.Figure(data=go.Heatmap(
+        z=z_matrix,
+        x=x_labels,
+        y=y_labels,
+        colorscale='YlOrRd',
+        colorbar=dict(title='Avg Risk'),
+        text=text_matrix,
+        texttemplate='%{text}',
+        textfont={'size': 8},
+        hovertemplate='Date: %{customdata}<br>Avg Risk: %{z:.3f}<extra></extra>',
+        customdata=customdate_matrix,
+        zmin=0,
+        zmax=1,
+    ))
+
+    fig.update_layout(
+        title=title,
+        xaxis=dict(title='Week Start', showgrid=False, tickmode='auto', nticks=12),
+        yaxis=dict(title='', showgrid=False, autorange='reversed'),
+        margin=dict(l=10, r=10, t=60, b=10),
+    )
+
+    return fig
