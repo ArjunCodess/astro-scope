@@ -25,6 +25,20 @@ AstroScope is an interactive dashboard that visualizes near-Earth asteroid data 
 - Python 3.7 or higher
 - NASA API key (get one at [https://api.nasa.gov](https://api.nasa.gov))
 
+### Getting a NASA API Key
+
+1. Go to [https://api.nasa.gov](https://api.nasa.gov).
+2. In the "Generate API Key" form, fill in the required fields:
+   - First Name (required)
+   - Last Name (required)
+   - Email (required)
+   - How will you use the APIs? (optional)
+3. Submit the form and check your email to receive your API key.
+4. Add the key to your `.env` file:
+   ```
+   NASA_API_KEY="YOUR_KEY_HERE"
+   ```
+
 ### Installation
 
 1. Clone the repository:
